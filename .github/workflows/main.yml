@@ -22,7 +22,7 @@ jobs:
     - name: Build data
       run: |
         wget -O docs/counts.tsv https://yongfu.name/ntu-gym/counts.tsv
-        cat counts.tsv
+        cat docs/counts.tsv
         sudo timedatectl set-timezone Asia/Taipei
         # date +%s > ./docs/version.txt
     - name: Deploy
