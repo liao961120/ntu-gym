@@ -1,0 +1,1 @@
+{"CounterData":[{"innerCount":"75;21","permitNum":"161;130","percentage":0,"isFull":""}]}
