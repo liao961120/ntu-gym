@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: Update Corpus Data
+name: Fetch person counts
 
 on: 
   push:
@@ -19,11 +19,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build data
+    - name: Save data
       run: |
         wget -O docs/counts.tsv https://yongfu.name/ntu-gym/counts.tsv
         cat docs/counts.tsv
         sudo timedatectl set-timezone Asia/Taipei
+        python main.py
         # date +%s > ./docs/version.txt
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
