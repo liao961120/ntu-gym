@@ -6,6 +6,8 @@ name: Update Corpus Data
 on: 
   push:
   repository_dispatch:
+  schedule:
+    - cron: '5 * * * *'
 
 jobs:
   build:
