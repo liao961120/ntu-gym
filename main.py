@@ -14,7 +14,7 @@ def get_curr_status():
     response = connection.getresponse()
     COUNT = json.loads(response.read().decode())
     gym, swim = COUNT['CounterData'][0]['innerCount'].split(";")
-    now = datetime.now().strftime("%Y-%m-%d %H:%M")
+    now = datetime.now().strftime("%Y-%m-%d\t%a\t%H:%M")
     return f"{now}\t{gym}\t{swim}\n"
 
 
