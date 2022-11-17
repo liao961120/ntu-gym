@@ -1,0 +1,14 @@
+li.row > span {
+    display: inline-block;
+    margin-right: .3em;
+    width: 5.5em;
+}
+li.row {
+    padding-left: 1em;
+}
+li.row:nth-child(2n-1) {
+    background-color: rgba(172, 172, 172, 0.227);
+}
+li.row:first-child {
+    list-style-type: none;
+}

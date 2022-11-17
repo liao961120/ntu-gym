@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Dev version -->
+    <!-- <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> -->  
+    <!-- Production version -->
+    <script src="https://unpkg.com/vue@3.2.45/dist/vue.global.prod.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.js" integrity="sha512-VcwFAndRWOHd2GciF0dxUnsMlQGvIWMzKaOECoZT/xvKE3B6Lsow+xtuoi+fI/hBKF2F05mgLcynmICdvI4a4g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <div id="app">
+        <div class="raw">
+            <input type="text" v-model="filt.weekday" placeholder="Weekday">
+            <input type="text" v-model.lazy="filt.time.from" placeholder="Time (from)">
+            <input type="text" v-model.lazy="filt.time.to" placeholder="Time (to)">
+            <ol start="0">
+                <li class="row">
+                    <span class="date">Date</span>
+                    <span class="weekday">Weekday</span>
+                    <span class="time">Time</span>
+                    <span class="num">Gym</span>
+                    <span class="num">Pool</span>
+                </li>
+                <li v-for="r in gymHasPeople" class="row">
+                    <span class="date"   >{{ r[0] }}</span>
+                    <span class="weekday">{{ r[1] }}</span>
+                    <span class="time"   >{{ r[2] }}</span>
+                    <span class="num"    >{{ r[3] }}</span>
+                    <span class="num"    >{{ r[4] }}</span>
+                    <!-- <span> {{ time2min(r[2]) }} </span> -->
+                </li>
+            </ol>
+        </div>
+    </div>
+    
+
+    
+    <script>
+        const { createApp } = Vue
+
+        createApp({
+            data() {
+                return {
+                    gym: [],
+                    filt: {
+                        weekday: "",
+                        time: {
+                            from: "",
+                            to: "",
+                        },
+                    }
+                }
+            },
+            computed: {
+                gymHasPeople: function() {
+                    var tf = this.filt.time.from;
+                    var tt = this.filt.time.to;
+                    if (tf == "" || this.time2min(tf) == -1) tf = "00:00"
+                    if (tt == "" || this.time2min(tt) == -1) tt = "24:00"
+                    tf = this.time2min(tf);
+                    tt = this.time2min(tt);
+
+                    return this.gym.filter(r => parseInt(r[3]) > 0 && 
+                                                r[1].includes(this.filt.weekday) &&
+                                                (tf <= this.time2min(r[2]) && this.time2min(r[2]) <= tt) 
+                                           )
+                }
+            },
+            methods: {
+                time2min: function(time) {
+                    if (!time.includes(":")) return -1
+                    time = time.split(":").map(x => parseInt(x));
+                    return time[0] * 60 + time[1]
+                },
+                async get_data() {
+                    const res = await fetch("./counts.tsv");   // https://yongfu.name/ntu-gym/counts.tsv
+                    const finalRes = await res.text();
+                    this.gym = Papa.parse(finalRes).data;
+                }
+            },
+            mounted: function() {
+                this.get_data();
+            }
+        }).mount('#app')
+    </script>
+</body>
+</html>
