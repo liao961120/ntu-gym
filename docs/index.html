@@ -94,6 +94,7 @@
                     this.gym = data.filter(r => r.length > 1).map(r => {
                         return [ r[0], r[1], this.time2min(r[2]), parseInt(r[3]), parseInt(r[4]) ]
                     })
+                    this.gym.reverse();
                 },
             },
             mounted: function() {
