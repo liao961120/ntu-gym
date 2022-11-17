@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <!-- Dev version -->
-    <!-- <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> -->  
+    <!-- <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>   -->
     <!-- Production version -->
     <script src="https://unpkg.com/vue@3.2.45/dist/vue.global.prod.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.js" integrity="sha512-VcwFAndRWOHd2GciF0dxUnsMlQGvIWMzKaOECoZT/xvKE3B6Lsow+xtuoi+fI/hBKF2F05mgLcynmICdvI4a4g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -30,15 +30,13 @@
                 <li v-for="r in gymHasPeople" class="row">
                     <span class="date"   >{{ r[0] }}</span>
                     <span class="weekday">{{ r[1] }}</span>
-                    <span class="time"   >{{ r[2] }}</span>
+                    <span class="time"   >{{ min2time(r[2]) }}</span>
                     <span class="num"    >{{ r[3] }}</span>
                     <span class="num"    >{{ r[4] }}</span>
-                    <!-- <span> {{ time2min(r[2]) }} </span> -->
                 </li>
             </ol>
         </div>
     </div>
-    
 
     
     <script>
@@ -68,7 +66,7 @@
 
                     return this.gym.filter(r => parseInt(r[3]) > 0 && 
                                                 r[1].includes(this.filt.weekday) &&
-                                                (tf <= this.time2min(r[2]) && this.time2min(r[2]) <= tt) 
+                                                (tf <= r[2] && r[2] <= tt) 
                                            )
                 }
             },
@@ -78,10 +76,19 @@
                     time = time.split(":").map(x => parseInt(x));
                     return time[0] * 60 + time[1]
                 },
+                min2time(mins) {
+                    const hh = `${Math.floor(mins / 60)}`.padStart(2, "0");
+                    const mm = `${mins % 60}`.padStart(2, "0");
+                    return `${hh}:${mm}`
+                },
                 async get_data() {
                     const res = await fetch("./counts.tsv");   // https://yongfu.name/ntu-gym/counts.tsv
                     const finalRes = await res.text();
-                    this.gym = Papa.parse(finalRes).data;
+                    const data = Papa.parse(finalRes).data;
+                    // Preprocessing
+                    this.gym = data.filter(r => r.length > 1).map(r => {
+                        return [ r[0], r[1], this.time2min(r[2]), r[3], r[4] ]
+                    })
                 }
             },
             mounted: function() {
