@@ -5,9 +5,9 @@ name: Fetch person counts
 
 on:
   schedule: 
-    - cron: '*/20 0-13 * * 1-5'
-    - cron: '*/20 1-13 * * 6'
+    - cron: '*/20 0-13 * * 1-6'
     - cron: '*/20 1-8 * * 0'
+    #     - cron: '*/20 1-13 * * 6'
     # - cron: '*/15 * * * *'  # Mon. - Fri., run every 5 minutes (during 6-22)  0/5 6-22 * * 1-5
     # - cron: '0/5 * * * *'  # Sat. & Sun., run every 5 minutes (during 9-22)  0/5 9-22 * * 6,0
   push:
