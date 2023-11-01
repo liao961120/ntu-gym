@@ -30,7 +30,9 @@ jobs:
         # cat docs/counts.tsv
         sudo timedatectl set-timezone Asia/Taipei
         pip install -r requirements.txt
-        python main.py
+        python main.py     # first fetch
+        sleep 61s 
+        python main.py     # second fetch 1min later
         # date +%s > ./docs/version.txt
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
